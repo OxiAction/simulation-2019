@@ -1,6 +1,9 @@
 package hair_salon;
 
 import desmoj.core.simulator.*;
+
+import java.util.concurrent.TimeUnit;
+
 import desmoj.core.dist.*;
 
 /**
@@ -67,13 +70,16 @@ public class HairSalonModel extends Model {
 	 * DESMO-J init.
 	 */
 	public void init() {
-		// customer arrival time: use mean time
-		customerArrivalTime = new ContDistExponential(this, "Customer Arrival Time", 3.0, true, true);
+		// customer arrival time
+		// mean: 20 (minutes)
+		customerArrivalTime = new ContDistExponential(this, "Customer Arrival Time", 20.0, true, true);
 		// exponential distribution may give us negative values
 		customerArrivalTime.setNonNegative(true);
 
-		// service time: min and max
-		serviceTime = new ContDistUniform(this, "Service Time", 0.5, 10.0, true, true);
+		// service time (~ 30 minutes)
+		// min: 20 (minutes)
+		// max: 40 (minutes)
+		serviceTime = new ContDistUniform(this, "Service Time", 20.0, 40.0, true, true);
 
 		// customer queue
 		customerQueue = new ProcessQueue<CustomerProcess>(this, "Customer Queue", true, true);
@@ -88,31 +94,18 @@ public class HairSalonModel extends Model {
 	 * @param args
 	 */
 	public static void main(java.lang.String[] args) {
-		// new experiment
-		Experiment hairSalonExperiment = new Experiment("Hair-Salon-Process");
-
-		// new model
+		Experiment experiment = new Experiment("Hair-Salon-Process");
+		
 		HairSalonModel hairSalonModel = new HairSalonModel(null, "Hair Salon Model", true, true);
-
-		// connect model with experiment
-		hairSalonModel.connectToExperiment(hairSalonExperiment);
-
-		// trace / debug interval
-		hairSalonExperiment.tracePeriod(new TimeInstant(0.0), new TimeInstant(60));
-		hairSalonExperiment.debugPeriod(new TimeInstant(0.0), new TimeInstant(60));
-
-		// set end time for simulation in minutes
-		hairSalonExperiment.stop(new TimeInstant(240));
-
-		// start experiment at time 0.0
-		hairSalonExperiment.start();
-
+		hairSalonModel.connectToExperiment(experiment);
+		
+//		experiment.setShowProgressBar(false);		// hide progress bar
+		experiment.debugOn(new TimeInstant(0));		// enable debug
+	    experiment.traceOn(new TimeInstant(0));		// enable trace
+		experiment.stop(new TimeInstant(60 * 24 * 7, TimeUnit.MINUTES));	// 60 (seconds) * 60 (minutes) * 24 (hours) * 7 (days) = 604800 (seconds)
+		experiment.start();							// start experiment at time 0.0
 		// ... simulation running now - on complete - continue:
-
-		// generate report
-		hairSalonExperiment.report();
-
-		// cleanup
-		hairSalonExperiment.finish();
+		experiment.report();						// generate report
+		experiment.finish();						// cleanup
 	}
 }
