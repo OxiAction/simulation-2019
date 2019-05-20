@@ -99,13 +99,13 @@ public class HairSalonModel extends Model {
 		HairSalonModel hairSalonModel = new HairSalonModel(null, "Hair Salon Model", true, true);
 		hairSalonModel.connectToExperiment(experiment);
 		
-//		experiment.setShowProgressBar(false);		// hide progress bar
-		experiment.debugOn(new TimeInstant(0));		// enable debug
-	    experiment.traceOn(new TimeInstant(0));		// enable trace
-		experiment.stop(new TimeInstant(60 * 24 * 7, TimeUnit.MINUTES));	// 60 (seconds) * 60 (minutes) * 24 (hours) * 7 (days) = 604800 (seconds)
-		experiment.start();							// start experiment at time 0.0
+		experiment.setShowProgressBar(true);						// progress bar visibillity
+		experiment.debugOn(new TimeInstant(0));						// enable debug
+	    experiment.traceOn(new TimeInstant(0));						// enable trace
+		experiment.stop(new TimeInstant(10080, TimeUnit.MINUTES));	// 60 (minutes) * 24 (hours) * 7 (days) = 10080 (minutes)
+		experiment.start();											// start experiment at time 0.0
 		// ... simulation running now - on complete - continue:
-		experiment.report();						// generate report
-		experiment.finish();						// cleanup
+		experiment.report();										// generate report
+		experiment.finish();										// cleanup
 	}
 }
