@@ -26,38 +26,51 @@ public class CustomerProcess extends SimProcess {
 	public CustomerProcess(Model owner, String name, boolean showInTrace) {
 		super(owner, name, showInTrace);
 
-		model = (HairSalonModel) owner;
+		this.model = (HairSalonModel) owner;
 	}
 
 	/**
 	 * Customer activities.
 	 */
 	public void lifeCycle() throws SuspendExecution {
-		// add customer to customer queue
-		model.customerQueue.insert(this);
+		// this customer enters the hair salon
+		this.model.customersInHairSalonQueue.insert(this);
 
-		// trace length of customer queue
-		sendTraceNote("Customer queue length: " + model.customerQueue.length());
-
-		// check if hair stylist is available
-		if (!model.hairStylistsQueue.isEmpty()) {
-			// fetch and remove hair stylist from hair stylists queue
-			HairStylistProcess hairStylist = model.hairStylistsQueue.first();
-			model.hairStylistsQueue.remove(hairStylist);
-
-			// activate hair stylist
-			hairStylist.activateAfter(this);
-
-			// customer is being serviced
-			passivate();
+		// trace length of customers in salon queue
+		this.sendTraceNote("Customers In Salon Queue length: " + this.model.customersInHairSalonQueue.length());
+		
+		// now this customer is also waiting for being serviced
+		this.model.customersWaitingForServiceQueue.insert(this);
+		
+		// go through all hair stylists
+		// note: first is "A", second "B", ...
+		for (HairStylistProcess hairStylist : model.hairStylistsQueue) {
+			// get first hair stylist available
+			if (hairStylist.customers.isEmpty()) {
+				// schedule this customer
+				hairStylist.activateAfter(this);
+				
+				break;
+			}
 		}
-		// all hair stylists busy
-		else {
-			// customer waiting in the queue
-			passivate();
-		}
-
-		// trace customer was serviced
-		sendTraceNote("Customer was serviced and is now leaving.");
+		
+		// set passive and wait for being serviced
+		this.passivate();
+	}
+	
+	/**
+	 * Customer leaves the "waiting for service" queue and enters the "being serviced" queue.
+	 */
+	public void setCustomerBeingServiced() {
+		this.model.customersWaitingForServiceQueue.remove(this);
+		this.model.customersBeingServicedQueue.insert(this);
+	}
+	
+	/**
+	 * Customer leaves the "being serviced" and the "in hair salon" queues.
+	 */
+	public void setCustomerLeaveHairSalon() {
+		this.model.customersBeingServicedQueue.remove(this);
+		this.model.customersInHairSalonQueue.remove(this);
 	}
 }

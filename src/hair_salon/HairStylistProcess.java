@@ -15,6 +15,11 @@ public class HairStylistProcess extends SimProcess {
 	 * Model reference.
 	 */
 	private HairSalonModel model;
+	
+	/**
+	 * Customers of this hair stylist.
+	 */
+	public ProcessQueue<CustomerProcess> customers;
 
 	/**
 	 * Constructor.
@@ -26,34 +31,44 @@ public class HairStylistProcess extends SimProcess {
 	public HairStylistProcess(Model owner, String name, boolean showInTrace) {
 		super(owner, name, showInTrace);
 
-		model = (HairSalonModel) owner;
+		this.model = (HairSalonModel) owner;
+		
+		// queue - mainly for debugging
+		this.customers = new ProcessQueue<CustomerProcess>(this.model, "Customers of " + name, true, true);
 	}
 
 	/**
-	 * Terminal activities.
+	 * Hair Stylist life cycle.
 	 */
 	public void lifeCycle() throws SuspendExecution {
 		// keep alive
 		while (true) {
-			if (model.customerQueue.isEmpty()) {
-				// add hair stylist to queue
-				model.hairStylistsQueue.insert(this);
-
-				// wait
-				passivate();
-			} else {
-				// fetch and remove customer from customer queue
-				CustomerProcess customer = model.customerQueue.first();
-				model.customerQueue.remove(customer);
-
-				// customer is being serviced
-				// -> deactivate the process for the time being,
-				//    using random number for customer service time
-				hold(new TimeSpan(model.serviceTime.sample()));
-
-				// customer was serviced and can now leave terminal
-				// -> reactivate
-				customer.activate(new TimeSpan(0.0));
+			// any customer waiting for being serviced?
+			
+			// no :(
+			if (this.model.customersWaitingForServiceQueue.isEmpty()) {
+				this.passivate();
+			} 
+			// yes :D
+			else {
+				// fetch first waiting customer
+				CustomerProcess customer = this.model.customersWaitingForServiceQueue.first();
+				
+				// add it to this hair stylists customers queue
+				this.customers.insert(customer);
+				
+				// customer is now being serviced...
+				customer.setCustomerBeingServiced();
+				// ...and this hair stylist is busy!
+				this.hold(new TimeSpan(this.model.serviceTime.sample()));
+				
+				// -> when the hair stylist is ready:
+				
+				// remove customer from this hair stylists customers queue...
+				this.customers.remove(customer);
+				// ...and make the customer leave the hair salon
+				customer.setCustomerLeaveHairSalon();
+				customer.activate();	
 			}
 		}
 	}

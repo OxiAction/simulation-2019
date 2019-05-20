@@ -25,12 +25,22 @@ public class HairSalonModel extends Model {
 	protected ContDistUniform serviceTime;
 
 	/**
-	 * Customers waiting queue.
+	 * Customers in hair salon queue.
 	 */
-	protected ProcessQueue<CustomerProcess> customerQueue;
+	protected ProcessQueue<CustomerProcess> customersInHairSalonQueue;
+	
+	/**
+	 * Customers waiting for service queue.
+	 */
+	protected ProcessQueue<CustomerProcess> customersWaitingForServiceQueue;
+	
+	/**
+	 * Customers being serviced queue.
+	 */
+	protected ProcessQueue<CustomerProcess> customersBeingServicedQueue;
 
 	/**
-	 * Hair Stylists queue.
+	 * Hair stylists queue.
 	 */
 	protected ProcessQueue<HairStylistProcess> hairStylistsQueue;
 
@@ -60,10 +70,6 @@ public class HairSalonModel extends Model {
 		// setup new customer process
 		NewCustomerProcess newCustomer = new NewCustomerProcess(this, "New Customer", true);
 		newCustomer.activate(new TimeSpan(0.0));
-
-		// setup hair stylist process
-		HairStylistProcess hairStylist = new HairStylistProcess(this, "Hair Stylist", true);
-		hairStylist.activate(new TimeSpan(0.0));
 	}
 
 	/**
@@ -72,20 +78,27 @@ public class HairSalonModel extends Model {
 	public void init() {
 		// customer arrival time
 		// mean: 20 (minutes)
-		customerArrivalTime = new ContDistExponential(this, "Customer Arrival Time", 20.0, true, true);
-		// exponential distribution may give us negative values
-		customerArrivalTime.setNonNegative(true);
+		this.customerArrivalTime = new ContDistExponential(this, "Customer Arrival Time", Config.CUSTOMER_ARRIVAL_MEAN, true, true);
+		// exponential distribution may give negative values
+		this.customerArrivalTime.setNonNegative(true);
 
 		// service time (~ 30 minutes)
 		// min: 20 (minutes)
 		// max: 40 (minutes)
-		serviceTime = new ContDistUniform(this, "Service Time", 20.0, 40.0, true, true);
+		this.serviceTime = new ContDistUniform(this, "Service Time", Config.SERVICE_TIME_LOWER, Config.SERVICE_TIME_UPPER, true, true);
 
-		// customer queue
-		customerQueue = new ProcessQueue<CustomerProcess>(this, "Customer Queue", true, true);
+		// customer queues
+		this.customersInHairSalonQueue = new ProcessQueue<CustomerProcess>(this, "Customers In Hair Salon Queue", true, true);
+		this.customersWaitingForServiceQueue = new ProcessQueue<CustomerProcess>(this, "Customers Waiting For Service Queue", true, true);
+		this.customersBeingServicedQueue = new ProcessQueue<CustomerProcess>(this, "Customers Being Serviced Queue", true, true);
 
 		// hair stylists queue
-		hairStylistsQueue = new ProcessQueue<HairStylistProcess>(this, "Hair Stylists Queue", true, true);
+		this.hairStylistsQueue = new ProcessQueue<HairStylistProcess>(this, "Hair Stylists Queue", true, true);
+		
+		// A, B, C,...
+		for (int i = 0; i < Config.MAX_HAIR_STYLISTS; ++i) {
+			this.hairStylistsQueue.insert(new HairStylistProcess(this, "Hair Stylist " + (char) ('A' + i), true));
+		}
 	}
 
 	/**
@@ -99,13 +112,21 @@ public class HairSalonModel extends Model {
 		HairSalonModel hairSalonModel = new HairSalonModel(null, "Hair Salon Model", true, true);
 		hairSalonModel.connectToExperiment(experiment);
 		
-		experiment.setShowProgressBar(true);						// progress bar visibillity
-		experiment.debugOn(new TimeInstant(0));						// enable debug
-	    experiment.traceOn(new TimeInstant(0));						// enable trace
-		experiment.stop(new TimeInstant(10080, TimeUnit.MINUTES));	// 60 (minutes) * 24 (hours) * 7 (days) = 10080 (minutes)
-		experiment.start();											// start experiment at time 0.0
-		// ... simulation running now - on complete - continue:
-		experiment.report();										// generate report
-		experiment.finish();										// cleanup
+		experiment.setSeedGenerator(979);										// seed
+		experiment.setShowProgressBar(true);									// progress bar visibility
+		experiment.debugOn(new TimeInstant(0));									// enable debug
+	    experiment.traceOn(new TimeInstant(0));									// enable trace
+		experiment.stop(new TimeInstant(Config.RUNTIME_DAYS, TimeUnit.DAYS));	// runtime
+		experiment.start();														// start experiment at time 0.0
+		
+		// ...simulation running now - on complete:
+		
+		experiment.report();													// generate report
+		experiment.finish();													// cleanup
+		
+		// TODO
+		// - opening times
+		// - random seed
+		// - test class
 	}
 }
