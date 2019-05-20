@@ -109,17 +109,17 @@ public class HairSalonModel extends Model {
 		HairSalonModel hairSalonModel = new HairSalonModel(null, "Hair Salon Model", true, true);
 		hairSalonModel.connectToExperiment(experiment);
 		
-		experiment.setSeedGenerator(979);											// seed
-		experiment.setShowProgressBar(true);										// progress bar visibility
-		experiment.debugOn(new TimeInstant(0));										// enable debug
-	    experiment.traceOn(new TimeInstant(0));										// enable trace
-		experiment.stop(new TimeInstant(Config.RUNTIME_MINUTES, TimeUnit.MINUTES));	// runtime
-		experiment.start();															// start experiment at time 0.0
+		experiment.setSeedGenerator(979);
+		experiment.setShowProgressBar(true);
+		experiment.debugOn(new TimeInstant(0));
+	    experiment.traceOn(new TimeInstant(0));
+		experiment.stop(new TimeInstant(Config.RUNTIME_MINUTES, TimeUnit.MINUTES));
+		experiment.start();
 		
 		// ...simulation running now - on complete:
 		
-		experiment.report();														// generate report
-		experiment.finish();														// cleanup
+		experiment.report();
+		experiment.finish();
 		
 		// TODO
 		// - random seed
