@@ -1,20 +1,20 @@
-package barber;
+package hair_salon;
 
 import desmoj.core.simulator.*;
 import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
- * DESMO-J Terminal SimProcess.
+ * DESMO-J Hair Stylist SimProcess.
  * 
  * @author Michael Schreiber, Markus Innerlohinger
  *
  */
-public class TerminalProcess extends SimProcess {
+public class HairStylistProcess extends SimProcess {
 
 	/**
 	 * Model reference.
 	 */
-	private BarberModel model;
+	private HairSalonModel model;
 
 	/**
 	 * Constructor.
@@ -23,10 +23,10 @@ public class TerminalProcess extends SimProcess {
 	 * @param name
 	 * @param showInTrace
 	 */
-	public TerminalProcess(Model owner, String name, boolean showInTrace) {
+	public HairStylistProcess(Model owner, String name, boolean showInTrace) {
 		super(owner, name, showInTrace);
 
-		model = (BarberModel) owner;
+		model = (HairSalonModel) owner;
 	}
 
 	/**
@@ -36,8 +36,8 @@ public class TerminalProcess extends SimProcess {
 		// keep alive
 		while (true) {
 			if (model.customerQueue.isEmpty()) {
-				// add terminal to queue
-				model.freeTerminalsQueue.insert(this);
+				// add hair stylist to queue
+				model.hairStylistsQueue.insert(this);
 
 				// wait
 				passivate();
@@ -47,8 +47,9 @@ public class TerminalProcess extends SimProcess {
 				model.customerQueue.remove(customer);
 
 				// customer is being serviced
-				// -> deactivate the process for the time being
-				hold(new TimeSpan(model.getServiceTime()));
+				// -> deactivate the process for the time being,
+				//    using random number for customer service time
+				hold(new TimeSpan(model.serviceTime.sample()));
 
 				// customer was serviced and can now leave terminal
 				// -> reactivate

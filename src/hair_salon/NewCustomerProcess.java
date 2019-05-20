@@ -1,4 +1,4 @@
-package barber;
+package hair_salon;
 
 import desmoj.core.simulator.*;
 import co.paralleluniverse.fibers.SuspendExecution;
@@ -14,7 +14,7 @@ public class NewCustomerProcess extends SimProcess {
 	/**
 	 * Model reference.
 	 */
-	private BarberModel model;
+	private HairSalonModel model;
 
 	/**
 	 * Constructor.
@@ -26,7 +26,7 @@ public class NewCustomerProcess extends SimProcess {
 	public NewCustomerProcess(Model owner, String name, boolean showInTrace) {
 		super(owner, name, showInTrace);
 
-		model = (BarberModel) owner;
+		model = (HairSalonModel) owner;
 	}
 
 	/**
@@ -36,7 +36,9 @@ public class NewCustomerProcess extends SimProcess {
 		// keep alive
 		while (true) {
 			// hold process until next customer needs to be created
-			hold(new TimeSpan(model.getCustomerArrivalTime()));
+			// -> deactivate the process for the time being,
+			//    using random number for customer arrival time
+			hold(new TimeSpan(model.customerArrivalTime.sample()));
 
 			// create a new customer
 			CustomerProcess customer = new CustomerProcess(model, "Customer", true);

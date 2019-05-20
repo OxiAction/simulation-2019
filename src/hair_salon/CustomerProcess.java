@@ -1,4 +1,4 @@
-package barber;
+package hair_salon;
 
 import desmoj.core.simulator.*;
 import co.paralleluniverse.fibers.SuspendExecution;
@@ -14,7 +14,7 @@ public class CustomerProcess extends SimProcess {
 	/**
 	 * Model reference.
 	 */
-	private BarberModel model;
+	private HairSalonModel model;
 
 	/**
 	 * Constructor.
@@ -26,7 +26,7 @@ public class CustomerProcess extends SimProcess {
 	public CustomerProcess(Model owner, String name, boolean showInTrace) {
 		super(owner, name, showInTrace);
 
-		model = (BarberModel) owner;
+		model = (HairSalonModel) owner;
 	}
 
 	/**
@@ -39,19 +39,19 @@ public class CustomerProcess extends SimProcess {
 		// trace length of customer queue
 		sendTraceNote("Customer queue length: " + model.customerQueue.length());
 
-		// check if terminal available
-		if (!model.freeTerminalsQueue.isEmpty()) {
-			// fetch and remove terminal from free terminals queue
-			TerminalProcess terminal = model.freeTerminalsQueue.first();
-			model.freeTerminalsQueue.remove(terminal);
+		// check if hair stylist is available
+		if (!model.hairStylistsQueue.isEmpty()) {
+			// fetch and remove hair stylist from hair stylists queue
+			HairStylistProcess hairStylist = model.hairStylistsQueue.first();
+			model.hairStylistsQueue.remove(hairStylist);
 
-			// activate terminal immediately
-			terminal.activateAfter(this);
+			// activate hair stylist
+			hairStylist.activateAfter(this);
 
 			// customer is being serviced
 			passivate();
 		}
-		// all terminals busy
+		// all hair stylists busy
 		else {
 			// customer waiting in the queue
 			passivate();

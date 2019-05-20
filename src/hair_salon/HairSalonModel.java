@@ -1,43 +1,25 @@
-package barber;
+package hair_salon;
 
 import desmoj.core.simulator.*;
 import desmoj.core.dist.*;
 
 /**
- * DESMO-J Barber Model.
+ * DESMO-J Hair Salon Model.
  * 
  * @author Michael Schreiber, Markus Innerlohinger
  *
  */
-public class BarberModel extends Model {
+public class HairSalonModel extends Model {
 
 	/**
 	 * Random generator for customer arrival.
 	 */
-	private ContDistExponential customerArrivalTime;
+	protected ContDistExponential customerArrivalTime;
 
 	/**
-	 * Returns random number for customer arrival.
-	 * 
-	 * @return
+	 * Random generator for service time (when serviced by a hair stylist).
 	 */
-	public double getCustomerArrivalTime() {
-		return customerArrivalTime.sample();
-	}
-
-	/**
-	 * Random generator for service time at the terminal.
-	 */
-	private ContDistUniform serviceTime;
-
-	/**
-	 * Returns random number for customer service time.
-	 * 
-	 * @return
-	 */
-	public double getServiceTime() {
-		return serviceTime.sample();
-	}
+	protected ContDistUniform serviceTime;
 
 	/**
 	 * Customers waiting queue.
@@ -45,9 +27,9 @@ public class BarberModel extends Model {
 	protected ProcessQueue<CustomerProcess> customerQueue;
 
 	/**
-	 * Waiting queue for free terminals.
+	 * Hair Stylists queue.
 	 */
-	protected ProcessQueue<TerminalProcess> freeTerminalsQueue;
+	protected ProcessQueue<HairStylistProcess> hairStylistsQueue;
 
 	/**
 	 * Constructor.
@@ -57,7 +39,7 @@ public class BarberModel extends Model {
 	 * @param showInReport
 	 * @param showIntrace
 	 */
-	public BarberModel(Model owner, String name, boolean showInReport, boolean showIntrace) {
+	public HairSalonModel(Model owner, String name, boolean showInReport, boolean showIntrace) {
 		super(owner, name, showInReport, showIntrace);
 	}
 
@@ -65,7 +47,7 @@ public class BarberModel extends Model {
 	 * Model description.
 	 */
 	public String description() {
-		return "BarberModel (process oriented): Lorem ipsum";
+		return "Hair Salon Model (process oriented)";
 	}
 
 	/**
@@ -76,9 +58,9 @@ public class BarberModel extends Model {
 		NewCustomerProcess newCustomer = new NewCustomerProcess(this, "New Customer", true);
 		newCustomer.activate(new TimeSpan(0.0));
 
-		// setup terminal process
-		TerminalProcess terminal = new TerminalProcess(this, "Terminal", true);
-		terminal.activate(new TimeSpan(0.0));
+		// setup hair stylist process
+		HairStylistProcess hairStylist = new HairStylistProcess(this, "Hair Stylist", true);
+		hairStylist.activate(new TimeSpan(0.0));
 	}
 
 	/**
@@ -96,8 +78,8 @@ public class BarberModel extends Model {
 		// customer queue
 		customerQueue = new ProcessQueue<CustomerProcess>(this, "Customer Queue", true, true);
 
-		// free terminals queue
-		freeTerminalsQueue = new ProcessQueue<TerminalProcess>(this, "Free Terminals Queue", true, true);
+		// hair stylists queue
+		hairStylistsQueue = new ProcessQueue<HairStylistProcess>(this, "Hair Stylists Queue", true, true);
 	}
 
 	/**
@@ -107,30 +89,30 @@ public class BarberModel extends Model {
 	 */
 	public static void main(java.lang.String[] args) {
 		// new experiment
-		Experiment barberExperiment = new Experiment("Barber-Process");
+		Experiment hairSalonExperiment = new Experiment("Hair-Salon-Process");
 
 		// new model
-		BarberModel barberModel = new BarberModel(null, "Barber Model", true, true);
+		HairSalonModel hairSalonModel = new HairSalonModel(null, "Hair Salon Model", true, true);
 
 		// connect model with experiment
-		barberModel.connectToExperiment(barberExperiment);
+		hairSalonModel.connectToExperiment(hairSalonExperiment);
 
 		// trace / debug interval
-		barberExperiment.tracePeriod(new TimeInstant(0.0), new TimeInstant(60));
-		barberExperiment.debugPeriod(new TimeInstant(0.0), new TimeInstant(60));
+		hairSalonExperiment.tracePeriod(new TimeInstant(0.0), new TimeInstant(60));
+		hairSalonExperiment.debugPeriod(new TimeInstant(0.0), new TimeInstant(60));
 
 		// set end time for simulation in minutes
-		barberExperiment.stop(new TimeInstant(240));
+		hairSalonExperiment.stop(new TimeInstant(240));
 
 		// start experiment at time 0.0
-		barberExperiment.start();
+		hairSalonExperiment.start();
 
 		// ... simulation running now - on complete - continue:
 
 		// generate report
-		barberExperiment.report();
+		hairSalonExperiment.report();
 
 		// cleanup
-		barberExperiment.finish();
+		hairSalonExperiment.finish();
 	}
 }
