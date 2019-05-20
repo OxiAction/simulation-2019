@@ -7,9 +7,10 @@ public class Config {
 	static final int MAX_HAIR_STYLISTS = 3;
 	
 	/**
-	 * Runtime (in days) for the simulation.
+	 * Runtime (in minutes) for the simulation.
+	 * 6 days * 8 hours * 60 minutes = 48 hours / week or 2880 minutes / week
 	 */
-	static final int RUNTIME_DAYS = 7;
+	static final int RUNTIME_MINUTES = 6 * 8 * 60;
 	
 	/**
 	 * Mean value for the customer arrival.
