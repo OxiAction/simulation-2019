@@ -77,14 +77,11 @@ public class HairSalonModel extends Model {
 	 */
 	public void init() {
 		// customer arrival time
-		// mean: 20 (minutes)
 		this.customerArrivalTime = new ContDistExponential(this, "Customer Arrival Time", Config.CUSTOMER_ARRIVAL_MEAN, true, true);
 		// exponential distribution may give negative values
 		this.customerArrivalTime.setNonNegative(true);
 
-		// service time (~ 30 minutes)
-		// min: 20 (minutes)
-		// max: 40 (minutes)
+		// service time
 		this.serviceTime = new ContDistUniform(this, "Service Time", Config.SERVICE_TIME_LOWER, Config.SERVICE_TIME_UPPER, true, true);
 
 		// customer queues
