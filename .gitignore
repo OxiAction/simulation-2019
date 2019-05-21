@@ -1,6 +1,9 @@
 # exclude
 bin/
 *.html
+# exclude reports content but not the folder
+reports/*
+!reports/.gitkeep 
 
 # Compiled class file
 *.class

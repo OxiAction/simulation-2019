@@ -104,7 +104,7 @@ public class HairSalonModel extends Model {
 	 * @param args
 	 */
 	public static void main(java.lang.String[] args) {
-		Experiment experiment = new Experiment("Hair-Salon-Process");
+		Experiment experiment = new Experiment("Hair-Salon-Process", "reports");
 		
 		HairSalonModel hairSalonModel = new HairSalonModel(null, "Hair Salon Model", true, true);
 		hairSalonModel.connectToExperiment(experiment);
