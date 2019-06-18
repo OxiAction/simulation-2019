@@ -1,4 +1,4 @@
-package hair_salon;
+package src.hair_salon;
 
 import desmoj.core.simulator.*;
 import co.paralleluniverse.fibers.SuspendExecution;

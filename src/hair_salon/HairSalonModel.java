@@ -1,4 +1,4 @@
-package hair_salon;
+package src.hair_salon;
 
 import desmoj.core.simulator.*;
 
@@ -86,9 +86,9 @@ public class HairSalonModel extends Model {
 		this.serviceTime = new ContDistUniform(this, "Service Time", Config.SERVICE_TIME_LOWER, Config.SERVICE_TIME_UPPER, true, true);
 
 		// customer queues
-		this.customersInHairSalonQueue = new ProcessQueue<CustomerProcess>(this, "Customers In Hair Salon Queue", true, true);
-		this.customersWaitingForServiceQueue = new ProcessQueue<CustomerProcess>(this, "Customers Waiting For Service Queue", true, true);
-		this.customersBeingServicedQueue = new ProcessQueue<CustomerProcess>(this, "Customers Being Serviced Queue", true, true);
+		this.customersInHairSalonQueue = new ProcessQueue<CustomerProcess>(this, "Customers In Hair Salon Queue", 0, 10 + Config.MAX_HAIR_STYLISTS, true, true);
+		this.customersWaitingForServiceQueue = new ProcessQueue<CustomerProcess>(this, "Customers Waiting For Service Queue",0 , 10, true, true);
+		this.customersBeingServicedQueue = new ProcessQueue<CustomerProcess>(this, "Customers Being Serviced Queue",0,Config.MAX_HAIR_STYLISTS, true, true);
 
 		// hair stylists queue
 		this.hairStylistsQueue = new ProcessQueue<HairStylistProcess>(this, "Hair Stylists Queue", true, true);
