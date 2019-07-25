@@ -24,16 +24,11 @@ public class BulkTesting {
 		FileWriter fileWriter = new FileWriter(file);
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-		double avgWait2 = 0;
-		double avgWait3 = 0;
-		double avgWait4 = 0;
-		double avgWait5 = 0;
-
 
 		System.out.println("starting Bulk testing");
 		
 		// start seed
-		Config.SEED = 800;
+		Config.SEED = 1;
 		// 10 tests
 		Config.NUM_TEST_RUNS = 10;
 
@@ -64,28 +59,11 @@ public class BulkTesting {
 					Reporter[] reports = hairSalonModel.run();
 
 					for (Reporter reporter : reports) {
-//					String reporterEntriesToString = reports[1].getEntries()[10];
 						String reporterEntriesToString = Arrays.toString(reporter.getEntries());
 						System.out.println(reporterEntriesToString);
 						bufferedWriter.write(reporterEntriesToString);
 						bufferedWriter.newLine();
 					}
-//					String reporterEntriesToString = reports[1].getEntries()[3];
-//					String reporterEntriesToString2 = reports[1].getEntries()[11];
-//					bufferedWriter.write(reporterEntriesToString + " | " + reporterEntriesToString2);
-//					bufferedWriter.newLine();
-
-//					if(Config.MAX_HAIR_STYLISTS == 2)
-//						avgWait2 += Double.parseDouble(reporterEntriesToString);
-//					else if(Config.MAX_HAIR_STYLISTS == 3)
-//						avgWait3 += Double.parseDouble(reporterEntriesToString);
-//					else if(Config.MAX_HAIR_STYLISTS == 4)
-//						avgWait4 += Double.parseDouble(reporterEntriesToString);
-//					else if(Config.MAX_HAIR_STYLISTS == 5)
-//						avgWait5 += Double.parseDouble(reporterEntriesToString);
-
-
-
 				}
 				Config.CUSTOMER_ARRIVAL_MEAN += 10.0;
 			}
@@ -93,20 +71,6 @@ public class BulkTesting {
 			Config.SEED += 10;
 		}
 
-
-//		avgWait2/=10;
-//		avgWait3/=10;
-//		avgWait4/=10;
-//		avgWait5/=10;
-//
-//		bufferedWriter.write(String.valueOf(avgWait2));
-//		bufferedWriter.newLine();
-//		bufferedWriter.write(String.valueOf(avgWait3));
-//		bufferedWriter.newLine();
-//		bufferedWriter.write(String.valueOf(avgWait4));
-//		bufferedWriter.newLine();
-//		bufferedWriter.write(String.valueOf(avgWait5));
-//		bufferedWriter.newLine();
 
 		bufferedWriter.close();
 		
