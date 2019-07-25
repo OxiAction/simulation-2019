@@ -23,45 +23,58 @@ public class BulkTesting {
 		FileWriter fileWriter = new FileWriter(file);
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 		
-		System.out.println("starting Bulk testing");
+		System.out.println("=> starting Bulk testing");
 		
 		// start seed
 		Config.SEED = 1;
 		// 10 tests
 		Config.NUM_TEST_RUNS = 10;
 		
-		for (int i = 1; i < Config.NUM_TEST_RUNS + 1; ++i) {
-			if (i > 1) {
-				bufferedWriter.newLine();
-			}
+		// testing parameters
+		final int TEST_HAIR_STYLISTS_START = 2;
+		final int TEST_HAIR_STYLISTS_MAX = 5;
+		final int[] TEST_CUSTOMER_ARRIVAL_MEAN_TIMES = {10, 20, 30};
+		
+		for (int j = 1; j < Config.NUM_TEST_RUNS + 1; ++j) {
+			System.out.println("\n=> Test " + j + " / " + Config.NUM_TEST_RUNS);
 			
-			System.out.println("\nTest " + i + " / " + Config.NUM_TEST_RUNS);
-			bufferedWriter.write("Test " + i);
-			bufferedWriter.newLine();
-			
-			// test 1-5 hair stylists
-			for (Config.MAX_HAIR_STYLISTS = 1; Config.MAX_HAIR_STYLISTS < 6; ++Config.MAX_HAIR_STYLISTS) {
-				System.out.println("\nConfig.MAX_HAIR_STYLISTS = " + Config.MAX_HAIR_STYLISTS);
-				bufferedWriter.write("Config.MAX_HAIR_STYLISTS =  " + Config.MAX_HAIR_STYLISTS);
-				bufferedWriter.newLine();
-				
-				HairSalonModel hairSalonModel = new HairSalonModel(null, "model", false, false);
-				// start experiment and get reports
-				Reporter[] reports = hairSalonModel.run();
-				
-				for (Reporter reporter : reports) {
-					String reporterEntriesToString = Arrays.toString(reporter.getEntries());
-					System.out.println(reporterEntriesToString);
-					bufferedWriter.write(reporterEntriesToString);
+			//different arrival time 10, 20, 30
+			for (int i = 0; i < TEST_CUSTOMER_ARRIVAL_MEAN_TIMES.length; ++i) {
+				if (i > 0) {
 					bufferedWriter.newLine();
 				}
 				
-				++Config.SEED;
+				// set arrival
+				Config.CUSTOMER_ARRIVAL_MEAN = TEST_CUSTOMER_ARRIVAL_MEAN_TIMES[i];
+				
+				System.out.println("\nConfig.CUSTOMER_ARRIVAL_MEAN = " + Config.CUSTOMER_ARRIVAL_MEAN);
+				bufferedWriter.write("Config.CUSTOMER_ARRIVAL_MEAN = " + Config.CUSTOMER_ARRIVAL_MEAN);
+				bufferedWriter.newLine();
+			
+				// test TEST_HAIR_STYLISTS_START to TEST_HAIR_STYLISTS_MAX hair stylists
+				for (Config.MAX_HAIR_STYLISTS = TEST_HAIR_STYLISTS_START; Config.MAX_HAIR_STYLISTS < TEST_HAIR_STYLISTS_MAX; ++Config.MAX_HAIR_STYLISTS) {
+					System.out.println("\nConfig.MAX_HAIR_STYLISTS = " + Config.MAX_HAIR_STYLISTS);
+					bufferedWriter.write("Config.MAX_HAIR_STYLISTS =  " + Config.MAX_HAIR_STYLISTS);
+					bufferedWriter.newLine();
+					
+					Config.SEED += 1;
+					
+					HairSalonModel hairSalonModel = new HairSalonModel(null, "model", false, false);
+					// start experiment and get reports
+					Reporter[] reports = hairSalonModel.run();
+
+					for (Reporter reporter : reports) {
+						String reporterEntriesToString = Arrays.toString(reporter.getEntries());
+						System.out.println(reporterEntriesToString);
+						bufferedWriter.write(reporterEntriesToString);
+						bufferedWriter.newLine();
+					}
+				}
 			}
 		}
 		
 		bufferedWriter.close();
 		
-		System.out.println("finished Bulk testing");
+		System.out.println("\n=> done!");
 	}
 }
