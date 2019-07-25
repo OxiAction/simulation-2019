@@ -15,7 +15,7 @@ public class Config {
 	/**
 	 * Mean value for the customer arrival.
 	 */
-	static double CUSTOMER_ARRIVAL_MEAN = 20;
+	static double CUSTOMER_ARRIVAL_MEAN = 10;
 	
 	/**
 	 * Service time lower bound.

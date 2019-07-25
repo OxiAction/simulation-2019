@@ -2,6 +2,7 @@ package src.hair_salon;
 
 import desmoj.core.simulator.*;
 import co.paralleluniverse.fibers.SuspendExecution;
+import jdk.jfr.Timespan;
 
 /**
  * DESMO-J Customer SimProcess.
@@ -38,10 +39,10 @@ public class CustomerProcess extends SimProcess {
 
 		// trace length of customers in salon queue
 		this.sendTraceNote("Customers In Salon Queue length: " + this.model.customersInHairSalonQueue.length());
-		
+
 		// now this customer is also waiting for being serviced
 		this.model.customersWaitingForServiceQueue.insert(this);
-		
+
 		// go through all hair stylists
 		// note: first is "A", second "B", ...
 		for (HairStylistProcess hairStylist : model.hairStylistsQueue) {
@@ -55,7 +56,10 @@ public class CustomerProcess extends SimProcess {
 		}
 		
 		// set passive and wait for being serviced
-		this.passivate();
+		this.hold(new TimeSpan(100));
+		this.model.customersWaitingForServiceQueue.remove(this);
+		this.model.customersInHairSalonQueue.remove(this);
+
 	}
 	
 	/**

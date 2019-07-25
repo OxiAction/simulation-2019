@@ -33,69 +33,80 @@ public class BulkTesting {
 		System.out.println("starting Bulk testing");
 		
 		// start seed
-		Config.SEED = 1;
+		Config.SEED = 800;
 		// 10 tests
 		Config.NUM_TEST_RUNS = 10;
 
-
+		//number of tests
 		for (int j = 1 ; j<= Config.NUM_TEST_RUNS; j++) {
 			System.out.println("\nTest " + j + "/" + Config.NUM_TEST_RUNS);
-//			bufferedWriter.write("Test " + j + "/" + Config.NUM_TEST_RUNS);
-//			bufferedWriter.newLine();
-//			for (int i = 1; i < 6; ++i) {
-//				if (i > 1) {
-//					bufferedWriter.newLine();
-//				}
-//
-//				System.out.println("\nTest at " + Config.CUSTOMER_ARRIVAL_MEAN + " arrival mean");
-//				bufferedWriter.write("Test at " + Config.CUSTOMER_ARRIVAL_MEAN + " arrival mean");
-//				bufferedWriter.newLine();
+			bufferedWriter.write("Test " + j + "/" + Config.NUM_TEST_RUNS);
+			bufferedWriter.newLine();
+
+			//different arrival time
+			for (int i = 1; i < 4; ++i) {
+				if (i > 1) {
+					bufferedWriter.newLine();
+				}
+
+				System.out.println("\nTest at " + Config.CUSTOMER_ARRIVAL_MEAN + " arrival mean");
+				bufferedWriter.write("Test at " + Config.CUSTOMER_ARRIVAL_MEAN + " arrival mean");
+				bufferedWriter.newLine();
 
 				// test 1-5 hair stylists
-				for (Config.MAX_HAIR_STYLISTS = 2; Config.MAX_HAIR_STYLISTS < 6; ++Config.MAX_HAIR_STYLISTS) {
+				for (Config.MAX_HAIR_STYLISTS = 2; Config.MAX_HAIR_STYLISTS < 5; ++Config.MAX_HAIR_STYLISTS) {
 					System.out.println("\nConfig.MAX_HAIR_STYLISTS = " + Config.MAX_HAIR_STYLISTS);
-//					bufferedWriter.write("Config.MAX_HAIR_STYLISTS =  " + Config.MAX_HAIR_STYLISTS);
-//					bufferedWriter.newLine();
+					bufferedWriter.write("Config.MAX_HAIR_STYLISTS =  " + Config.MAX_HAIR_STYLISTS);
+					bufferedWriter.newLine();
 
 					HairSalonModel hairSalonModel = new HairSalonModel(null, "model", false, false);
 					// start experiment and get reports
 					Reporter[] reports = hairSalonModel.run();
 
-					String reporterEntriesToString = reports[1].getEntries()[10];
-//					String reporterEntriesToString = Arrays.toString(reporter.getEntries());
-//					System.out.println(reporterEntriesToString);
-//					bufferedWriter.write(reporterEntriesToString);
+					for (Reporter reporter : reports) {
+//					String reporterEntriesToString = reports[1].getEntries()[10];
+						String reporterEntriesToString = Arrays.toString(reporter.getEntries());
+						System.out.println(reporterEntriesToString);
+						bufferedWriter.write(reporterEntriesToString);
+						bufferedWriter.newLine();
+					}
+//					String reporterEntriesToString = reports[1].getEntries()[3];
+//					String reporterEntriesToString2 = reports[1].getEntries()[11];
+//					bufferedWriter.write(reporterEntriesToString + " | " + reporterEntriesToString2);
 //					bufferedWriter.newLine();
 
-					if(Config.MAX_HAIR_STYLISTS == 2)
-						avgWait2 += Double.parseDouble(reporterEntriesToString);
-					else if(Config.MAX_HAIR_STYLISTS == 3)
-						avgWait3 += Double.parseDouble(reporterEntriesToString);
-					else if(Config.MAX_HAIR_STYLISTS == 4)
-						avgWait4 += Double.parseDouble(reporterEntriesToString);
-					else if(Config.MAX_HAIR_STYLISTS == 5)
-						avgWait5 += Double.parseDouble(reporterEntriesToString);
-					
-					Config.SEED+=10;
+//					if(Config.MAX_HAIR_STYLISTS == 2)
+//						avgWait2 += Double.parseDouble(reporterEntriesToString);
+//					else if(Config.MAX_HAIR_STYLISTS == 3)
+//						avgWait3 += Double.parseDouble(reporterEntriesToString);
+//					else if(Config.MAX_HAIR_STYLISTS == 4)
+//						avgWait4 += Double.parseDouble(reporterEntriesToString);
+//					else if(Config.MAX_HAIR_STYLISTS == 5)
+//						avgWait5 += Double.parseDouble(reporterEntriesToString);
 
-//				}
-//				Config.CUSTOMER_ARRIVAL_MEAN += 5.0;
+
+
+				}
+				Config.CUSTOMER_ARRIVAL_MEAN += 10.0;
 			}
-
+			Config.CUSTOMER_ARRIVAL_MEAN = 10.0;
+			Config.SEED += 10;
 		}
-		avgWait2/=10;
-		avgWait3/=10;
-		avgWait4/=10;
-		avgWait5/=10;
 
-		bufferedWriter.write(String.valueOf(avgWait2));
-		bufferedWriter.newLine();
-		bufferedWriter.write(String.valueOf(avgWait3));
-		bufferedWriter.newLine();
-		bufferedWriter.write(String.valueOf(avgWait4));
-		bufferedWriter.newLine();
-		bufferedWriter.write(String.valueOf(avgWait5));
-		bufferedWriter.newLine();
+
+//		avgWait2/=10;
+//		avgWait3/=10;
+//		avgWait4/=10;
+//		avgWait5/=10;
+//
+//		bufferedWriter.write(String.valueOf(avgWait2));
+//		bufferedWriter.newLine();
+//		bufferedWriter.write(String.valueOf(avgWait3));
+//		bufferedWriter.newLine();
+//		bufferedWriter.write(String.valueOf(avgWait4));
+//		bufferedWriter.newLine();
+//		bufferedWriter.write(String.valueOf(avgWait5));
+//		bufferedWriter.newLine();
 
 		bufferedWriter.close();
 		

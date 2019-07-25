@@ -43,6 +43,14 @@ public class HairStylistProcess extends SimProcess {
 	public void lifeCycle() throws SuspendExecution {
 		// keep alive
 		while (true) {
+
+			//removing all non-serviced customers from hairsalon
+			if (((int) this.presentTime().getTimeAsDouble()) % 8 * 60 == 0) {
+				this.model.customersInHairSalonQueue.removeAll();
+				this.model.customersWaitingForServiceQueue.removeAll();
+			}
+
+
 			// any customer waiting for being serviced?
 			
 			// no :(

@@ -108,14 +108,15 @@ public class HairSalonModel extends Model {
 	 */
 	public Reporter[] run() {
 		Experiment experiment = new Experiment("Hair-Salon-Process", "reports");
-		
+		SimClock time = new SimClock("time");
+
 		HairSalonModel hairSalonModel = new HairSalonModel(null, "Hair Salon Model", true, true);
 		hairSalonModel.connectToExperiment(experiment);
-		
+
 		experiment.setSeedGenerator(Config.SEED);
 		experiment.setShowProgressBar(false);
 		experiment.debugOn(new TimeInstant(0));
-	    experiment.traceOn(new TimeInstant(0));
+		experiment.traceOn(new TimeInstant(0));
 		experiment.stop(new TimeInstant(Config.RUNTIME_MINUTES, TimeUnit.MINUTES));
 		experiment.setSilent(true);
 		experiment.start();
